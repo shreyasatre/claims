@@ -1,0 +1,30 @@
+Claims Milestones
+
+1. Login / logout with database
+   - Once logged in, user will be able to use all functionalities assigned to their role.
+   - User cannot visit any other page without logging in.
+   - Once logged out, any subsequent attempts to visit other pages will result in redirecting to login page.
+   - Wrong username / password will result in displaying an error message. 
+2. Home page with tiles / cards
+   - Tiles / cards will be an entrance for a functionality. 
+   - User will see only role specific functionalities.
+   - Tiles / cards will have short descriptions of functionalities.
+   - Summary of latest claims based on user's role will be shown.
+3. Submit a claim
+   - Only user of *Submitter* role will be able to submit a claim.
+   - Mandatory fields will be marked with a red asterisk (*).
+   - Error messages will be displayed for any missed / wrong input.
+   - Success message will be displayed after submitting a claim.
+4. Approve a claim
+   - Only user of *Approver* role will be able to see a claim.
+   - A table of claims will be shown.
+   - Available options: Approve / Deny.
+   - If denied, reason must be specified in an adjascent text box, and claim will be removed from the queue.
+   - If approved, the claim be removed from the queue. No reason required.
+5. Email notifications
+   - Emails will be sent for submitting a claim, approval / denial of claim.
+   - Email will contain a message of what action was taken and a link to home page.
+6. Reporting
+   - Search based on submission date, user, status, committee, etc.
+   - Export all data to CSV / Excel format.
+   - Data availability will be based on logged in user's role.
