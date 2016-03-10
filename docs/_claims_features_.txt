@@ -1,0 +1,10 @@
+Discussion points
+- Show full name along with email on claims form
+- Expense date as per the receipt
+- Only one image of receipt
+- 'Use my address' checkbox
+- Expense types with subcodes
+- Allow editing a claim if it's still in the approver's queue
+
+Questions
+- Lowest amount that can be claims?
