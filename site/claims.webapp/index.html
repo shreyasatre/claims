@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Bharatiya Temple Claims</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-loading">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+				<!-- Main -->
+					<section id="main">
+						<header>
+							<span class="avatar"><img src="images/logo_bt.gif" alt="" /></span>
+							<p>Bharatiya Temple Troy</p>
+							<h1>Expense Claims</h1>
+						</header>
+						<hr>
+						<form id="frmLogin" method="post" action="#">
+							<div class="field">
+								<input class="icon" type="text" name="username" id="username" placeholder="&#xf007; username" />
+							</div>
+							<div class="field">
+								<input class="icon" type="password" name="password" id="password" placeholder="&#xf13e; password" />
+								<p><small><a href="#">Forgot your password?</a></small><p>
+							</div>
+							<ul class="actions">
+								<li><input class="submit" type="submit" value="Sign In"></li>
+							</ul>
+							<div id="loginResult" class="hidden"></div>
+						</form>
+						<hr>
+						<!--
+						<footer>
+							<ul class="icons">
+								<li><a href="#" class="fa-facebook">Facebook</a></li>
+								<li><a href="#" class="fa-twitter">Twitter</a></li>
+								<li><a href="#" class="fa-google-plus">Google+</a></li>
+							</ul>
+						</footer>-->
+					</section>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<ul class="copyright">
+							<li>&copy; Bharatiya Temple</li>
+							<li>Designed by I.T. Team</a></li>
+						</ul>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<!--[if lte IE 8]><script src="assets/js/respond.min.js"></script><![endif]-->
+			<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+			<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.min.js"></script>
+			<script>
+				if ('addEventListener' in window) {
+					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-loading\b/, ''); });
+					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+				}
+			</script>
+			<script>
+            // When the document is ready
+            $(document).ready(function () {              
+                //validation rules
+                //by default it will append a <label class="error> element to the invalid input
+                //and will add a "error" class to the input
+                $("#frmLogin").validate({
+                    rules: {
+                        username: {
+                            required: true
+                        },  
+                        password: {
+                            required: true,
+                            minlength: 5
+                        } 
+                    },
+					messages: {
+						username: {
+							required: "Please enter your username"
+						},
+						password: {
+							required: "Please enter your password"
+						}
+					}
+                });
+				
+				$("#frmLogin").submit(function() { // loginForm is submitted
+				var username = $('#username').val(); // get username
+				var password = $('#password').val(); // get password
+
+				if (username && password) { // values are not empty
+				  $.ajax({
+					type: "POST",
+					url: "http://localhost:8080/bt-db-layer-1.0-SNAPSHOT/login", //URL of the service
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					data: JSON.stringify({username :  username,password:  password}),
+					// script call was *not* successful
+					error: function() { 
+					  $('div#loginResult').text("Invalid login");
+					  $('div#loginResult').addClass("error");
+					}, // error 
+					// script call was successful 
+					// data contains the JSON values returned by the service 
+					success: function(data){
+					  if (data.intLnkAccountStatus === 0) { // script returned error
+						$('div#loginResult').text("data.error: " + data.error);
+						$('div#loginResult').addClass("error");
+					  } // if
+					  else { // login was successful
+						 if(data.accountStatus === 1)
+						$('#frmLogin').hide();
+						$('div#loginResult').text("data.success: " + data.strUsername 
+						  + ", data.userid: " + data.intUserIdx);
+						$('div#loginResult').addClass("success");
+						window.location.href='home.html'
+					  }
+					} 
+				  });
+				} 
+				$('div#loginResult').fadeIn();
+				return false;
+			  });
+            });
+        </script>
+	</body>
+</html>
