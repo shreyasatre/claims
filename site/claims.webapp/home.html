@@ -2,7 +2,8 @@
 <html>
 	<head>
 		<title>Bharatiya Temple Claims</title>
-		<meta charset="utf-8" />
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<!--[if lte IE 8]><script src="assets/js/html5shiv.js"></script><![endif]-->
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -19,10 +20,9 @@
 			<!-- Wrapper -->
 			<div class="md-perspective md-modal md-effect-16" id="divNewClaim">
 					<div class="md-content">
-						<h3>New Expense Claim</h3>
+						<h3><i class="fa fa-times md-close nav-right"></i>New Expense Claim</h3>
 							<div class="section nav-center">
 								<p>Complete the below details to submit a claim</p>
-								<input type="button" class="md-close" value="Close me!" />
 							</div>
 						<div class="section group">	
 								<input class="icon" type="text" name="username" id="strSubmittedBy" disabled="true" placeholder="&#xf007; submitted by" />
@@ -61,12 +61,16 @@
 								<textarea name="purpose" id="strPurpose" placeholder="purpose of the expenditure"></textarea>
 						</div>
 						<div class="section group">
-								<select id="selExpenseCode" placeholder="select expense code">
-										<option value="code1">Groceries</option>
-									  <option value="code2">Technology</option>
-									  <option value="code3">Prasad</option>
-									  <option value="code4">Test</option>
-								</select>
+								<input type="file" name="file-3[]" id="file-3" class="inputfile inputfile-3" />
+								<label for="file-3"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg> <span>Upload a receipt&hellip;</span></label>
+						</div>
+						<div class="section group">
+								<div class="col span_1_of_2">
+										<select id="selExpenseCode" placeholder="select expense code"></select>
+								</div>
+								<div class="col span_1_of_2">
+									<select id="selExpenseSubCode" placeholder="select expense subcode"></select>
+								</div>
 						</div>
 						<div class="nav-center">
 							<input id="btnNewClaimSubmit" type="submit" class="" value="Submit" />
@@ -75,10 +79,9 @@
 			</div>
 			<div class="md-modal md-effect-16" id="divReports">
 					<div class="md-content">
-						<h3>Search</h3>
+						<h3><i class="fa fa-times md-close nav-right"></i>Search</h3>
 						<div>
 							<p>Enter the search criteria to look for specific claims</p>
-							<input type="button" class="md-close" value="Close me!" />
 							<div class="field">
 								<label>Submitted By</label>
 								<input type="text" name="username" id="strName" placeholder="full name" />
@@ -128,6 +131,24 @@
 									</thead>
 								</table>
 							</div>
+							<br/>
+							<div class="table-wrapper card">
+								<h2>Searched Claims</h2>
+								<br />
+								<table id="dtSearchedClaims" class="display" width="100%">
+									<thead>
+										<tr>
+											<th>Submitted By</th>
+											<th>Status</th>
+											<th>Amount</th>
+											<th>Description</th>
+											<th>Expense Type</th>
+											<th>Committee</th>
+											<th>Submitted Date</th>
+										</tr>
+									</thead>
+								</table>
+							</div>
 							<div class="section group">
 								<div class="col span_1_of_2">
 									<div class="card">
@@ -172,6 +193,7 @@
 		<script src="assets/js/modalEffects.js"></script>
 		<script src="assets/js/pikaday.js"></script>
 		<script src="assets/js/pikaday.jquery.js"></script>
+		<script src="assets/js/jquery.custom-file-input.js"></script>
 		<script>
 			var polyfilter_scriptpath = 'assets/js/css-filters-polyfill';
 		</script>
@@ -231,10 +253,50 @@
 					});
 			}
 			
+			function populateExpenseDropdown() {
+				 $.ajax({
+						type: "GET",
+						url: "http://localhost:8080/bt-db-layer-1.0-SNAPSHOT/expense/getAll",
+						data: {},
+						success: function (msg) {
+							$("#selExpenseCode").append($('<option default></option>').val("0").html("select expense type"));
+							$.each(msg, function (index, item) {
+									$("#selExpenseCode").append("<option value='"+ item.expenseTypeId+"'>"+ item.expenseCode +"</option>");
+							});
+					   },
+						error: function () {
+							alert("Failed to load genders");
+						}
+				});
+			}
+			
+			function populateExpenseSubType() {
+				 $.ajax({
+						type: "GET",
+						url: "http://localhost:8080/bt-db-layer-1.0-SNAPSHOT/expense/getAllSubcodes/" + $("#selExpenseCode").val(),
+						data: {},
+						success: function (msg) {
+							$("#selExpenseSubCode").empty();
+							$("#selExpenseSubCode").append($('<option default></option>').val("0").html("select expense type"));
+							$.each(msg, function (index, item) {
+									$("#selExpenseSubCode").append("<option value='"+ item.expenseSubCode+"'>"+ item.expenseSubCodeDescription +"</option>");
+							});
+					   },
+						error: function () {
+							alert("Failed to load genders");
+						}
+				});
+			}
+			
 		// When the document is ready
 			$(document).ready(function() {	
 				
 				checkSession();
+				populateExpenseDropdown();
+				
+				$("#selExpenseCode").on('change', function(e){
+					 populateExpenseSubType();
+				});
 			
 				// activate datepickers for all elements with a class of `datepicker`
 				$('.datepicker').pikaday({ firstDay: 1});
@@ -286,7 +348,12 @@
 									dtLatestClaims.fnDraw();
 								}
 					}});
+					
+					
 				});
+				
+				/*Search claims*/
+				$('#dtSearchedClaims').DataTable({});
 				
 			});
 		</script>

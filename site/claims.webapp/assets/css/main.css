@@ -57,6 +57,7 @@
 
 		html, body {
 			min-width: 320px;
+			font-size: 60%;
 		}
 
 	}
@@ -152,8 +153,8 @@
 		@media screen and (max-width: 480px) {
 
 			body {
-				font-size: 10pt;
-				line-height: 1.75;
+				font-size: 60%;
+				line-height: 1.20;
 			}
 			
 		}
